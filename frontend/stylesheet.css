@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    padding: 20px;
+    padding: 0;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -27,11 +27,11 @@ h1 {
     font-size: 3rem;
     color: white;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px; /* Reduced from 20px */
 }
 
 .logo-container {
-    margin: 20px 0;
+    margin: 0 0 20px 0; /* Changed from margin: 20px 0; */
 }
 
 .logo {
@@ -45,20 +45,19 @@ form {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 300px;
 }
 
 input[type="email"] {
-    width: 100%;
-    padding: 12px;
+    padding: 10px;
     font-size: 1rem;
-    margin-bottom: 15px;
+    width: 300px;
+    margin-bottom: 10px;
     border-radius: 20px;
     border: 1px solid #ccc;
     outline: none;
     text-align: center;
     color: black;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.8); /* semi-transparent white */
 }
 
 input[type="email"]::placeholder {
@@ -67,8 +66,7 @@ input[type="email"]::placeholder {
 }
 
 button {
-    width: 100%;
-    padding: 12px;
+    padding: 10px 20px;
     font-size: 1rem;
     background-color: transparent;
     color: white;
@@ -84,23 +82,37 @@ button:hover {
     border-color: black;
 }
 
-@media (max-width: 480px) {
-    body {
-        padding: 10px;
-    }
+.logo {
+    width: 224px;
+    height: 164px;
+    margin-bottom: 20px;
+    object-fit: contain; /* This ensures the logo maintains its aspect ratio */
+}
 
+@media (max-width: 600px) {
     h1 {
-        font-size: 2rem;
+        font-size: 2.5rem;
     }
 
     .logo {
-        width: 140px;
-        height: 103px;
+        width: 168px;
+        height: 123px;
     }
 
-    input[type="email"],
-    button {
-        font-size: 0.9rem;
-        padding: 10px;
+    /* ... other responsive styles ... */
+}
+
+@media (max-width: 480px) {
+    /* ... existing mobile styles ... */
+
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 5px; /* Further reduced for mobile */
     }
+
+    .logo-container {
+        margin: 0 0 15px 0; /* Adjusted for mobile */
+    }
+
+    /* ... other mobile styles ... */
 }

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Days+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheet.css">
+    <style>
+        @keyframes firework {
+            0% { transform: translate(var(--x), var(--initialY)); width: var(--initialSize); opacity: 1; }
+            50% { width: 0.5vmin; opacity: 1; }
+            100% { width: var(--finalSize); opacity: 0; }
+        }
+
+        .firework,
+        .firework::before,
+        .firework::after {
+            --initialSize: 0.5vmin;
+            --finalSize: 45vmin;
+            --particleSize: 0.2vmin;
+            --color: white;
+            --y: -30vmin;
+            --x: -50%;
+            --initialY: 60vmin;
+            content: "";
+            animation: firework 2s infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, var(--y));
+            width: var(--initialSize);
+            aspect-ratio: 1;
+            background: 
+                radial-gradient(circle, var(--color) var(--particleSize), #0000 0) 50% 0%,
+                radial-gradient(circle, var(--color) var(--particleSize), #0000 0) 100% 50%,
+                radial-gradient(circle, var(--color) var(--particleSize), #0000 0) 50% 100%,
+                radial-gradient(circle, var(--color) var(--particleSize), #0000 0) 0% 50%,
+                radial-gradient(circle, var(--color) var(--particleSize), #0000 0) 80% 90%,
+                radial-gradient(circle, var(--color) var(--particleSize), #0000 0) 95% 90%,
+                radial-gradient(circle, var(--color) var(--particleSize), #0000 0) 90% 70%,
+                radial-gradient(circle, var(--color) var(--particleSize), #0000 0) 100% 60%,
+                radial-gradient(circle, var(--color) var(--particleSize), #0000 0) 55% 80%,
+                radial-gradient(circle, var(--color) var(--particleSize), #0000 0) 70% 77%,
+                radial-gradient(circle, var(--color) var(--particleSize), #0000 0) 22% 90%,
+                radial-gradient(circle, var(--color) var(--particleSize), #0000 0) 45% 85%;
+            background-size: var(--initialSize) var(--initialSize);
+            background-repeat: no-repeat;
+        }
+
+        .firework::before {
+            --x: -50%;
+            --y: -50%;
+            --initialY: -50%;
+        }
+
+        .firework::after {
+            --x: -50%;
+            --y: -50%;
+            --initialY: -50%;
+        }
+
+        #message {
+            position: fixed;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-align: center;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #333;
+            display: none;
+        }
+
+        .success-message {
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>JOIN THE NEW</h1>
+        <div class="logo-container">
+            <img src="components/images/Logo_desnudo_Blanco.png" alt="Logo" class="logo">
+        </div>
+        <form id="email-form">
+            <input type="email" name="email" placeholder="Enter your email" required>
+            <button type="submit">Submit</button>
+        </form>
+        <div id="message"></div>
+    </main>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('email-form');
+        const messageDiv = document.getElementById('message');
+
+        function createFireworks() {
+            for (let i = 0; i < 5; i++) {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                firework.style.left = `${Math.random() * 100}%`;
+                firework.style.top = `${Math.random() * 100}%`;
+                document.body.appendChild(firework);
+                setTimeout(() => {
+                    firework.remove();
+                }, 2000);
+            }
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = form.email.value;
+            
+            fetch('/api/submit-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                messageDiv.textContent = data.message || 'Email submitted successfully!';
+                messageDiv.className = 'success-message';
+                messageDiv.style.display = 'block';
+                form.reset();
+
+                createFireworks();
+
+                // Remove success message and class after 5 seconds
+                setTimeout(() => {
+                    messageDiv.textContent = '';
+                    messageDiv.className = '';
+                    messageDiv.style.display = 'none';
+                }, 5000);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                messageDiv.textContent = 'Error submitting email. Please try again.';
+                messageDiv.style.color = 'red';
+                messageDiv.className = '';
+                messageDiv.style.display = 'block';
+                
+                // Hide error message after 5 seconds
+                setTimeout(() => {
+                    messageDiv.textContent = '';
+                    messageDiv.style.display = 'none';
+                }, 5000);
+            });
+        });
+    });
+    </script>
+</body>
+</html>
+
